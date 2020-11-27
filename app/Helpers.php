@@ -41,3 +41,7 @@ function curl_post_https($url, $post_data, $header = [])
     return $json;
 }
 
+function dataFormat($code = 0, $msg = '', $data = null)
+{
+    return ['code'=>$code, 'msg'=>$msg, 'data'=>$data];
+}

@@ -3,36 +3,36 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\CollegeArticle;
-use Illuminate\Support\Facades\Validator;
+use App\Models\AdminRole;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
-class CollegeArticleController extends Controller
+class AdminRoleController extends Controller
 {
-    //文章列表
-    public function collegeArticleList(Request $request)
+    //角色列表
+    public function adminRoleList(Request $request)
     {
         $params = $request->input();
         $page = $params['page'] ?? 1;
         $size = $params['size'] ?? 10;
 
-        $data = CollegeArticle::orderBy('sort', 'desc')->paginate($size);
+        $data = AdminRole::orderBy('created_at', 'desc')->paginate($size);
 
         return dataFormat(0, '成功！', $data);
     }
 
-    //添加文章
-    public function collegeArticleAdd(Request $request)
+    //添加角色
+    public function adminRoleAdd(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required',
+            'role_name' => 'required',
         ]);
         if ($validator->fails()) {
             return dataFormat('1', $validator->errors()->first());
         }
 
         $params = $request->input();
-        $result = CollegeArticle::MyInsert($params);
+        $result = AdminRole::MyInsert($params);
 
         if ($result === false) {
             return dataFormat('1', '失败！');
@@ -40,19 +40,19 @@ class CollegeArticleController extends Controller
         return dataFormat('0', '成功！');
     }
 
-    //编辑文章
-    public function collegeArticleEdit(Request $request)
+    //编辑角色
+    public function adminRoleEdit(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id' => 'required',
-            'title' => 'required',
+            'id' => 'required|int',
+            'role_name' => 'required',
         ]);
         if ($validator->fails()) {
             return dataFormat('1', $validator->errors()->first());
         }
 
         $params = $request->input();
-        $result = CollegeArticle::MyEdit($params);
+        $result = AdminRole::MyEdit($params);
 
         if ($result === false) {
             return dataFormat('1', '失败！');
@@ -60,8 +60,8 @@ class CollegeArticleController extends Controller
         return dataFormat('0', '成功！');
     }
 
-    //删除文章
-    public function collegeArticleDel(Request $request)
+    //删除角色
+    public function adminRoleDel(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'id' => 'required',
@@ -70,27 +70,7 @@ class CollegeArticleController extends Controller
             return dataFormat('1', $validator->errors()->first());
         }
         $id = $request->input('id');
-        $result = CollegeArticle::where('id', $id)->delete();
-
-        if ($result === false) {
-            return dataFormat('1', '失败！');
-        }
-        return dataFormat('0', '成功！');
-    }
-
-    //发布文章
-    public function collegeArticlePublish(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'id' => 'required',
-            'status' => 'required|in:0,1',
-        ]);
-        if ($validator->fails()) {
-            return dataFormat('1', $validator->errors()->first());
-        }
-
-        $params = $request->input();
-        $result = CollegeArticle::where('id', $params['id'])->update(['status' => $params['status']]);
+        $result = AdminRole::where('id', $id)->delete();
 
         if ($result === false) {
             return dataFormat('1', '失败！');
